@@ -136,6 +136,7 @@
         'getNextPegoutCreationBlockNumber',
         'getQueuedPegoutsCount',
         'getActivePowpegRedeemScript',
+        'getBtcTransactionConfirmations',
     ];
 
     const bridgeAddress = '0x0000000000000000000000000000000001000006';
@@ -319,13 +320,12 @@
         const button = event.target;
         const inputs = Array.from(button.parentNode.querySelectorAll('input'));
         ensureAllInputsAreFilled(inputs);
-        const args = inputs.map(input => input.value);
+        const args = inputs.map(input => input.value?.startsWith('[') ? JSON.parse(input.value) : input.value);
         const functionName = button.innerText;
 
         const displayElement = button.parentNode.querySelector('.display');
 
         displayElement.innerText = '';
-
         try {
             const result = await bridge.methods[functionName](...args).call();
             displayElement.innerText = result;
